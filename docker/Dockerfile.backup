@@ -1,0 +1,4 @@
+FROM postgres:16-alpine
+
+COPY docker/backup-cron.sh /usr/local/bin/backup.sh
+RUN chmod +x /usr/local/bin/backup.sh
