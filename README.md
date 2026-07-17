@@ -99,8 +99,8 @@ A modern, multilingual web application for managing your personal home library. 
 1. **Clone the repository**
 
    ```bash
-   git clone <repository-url> home_library
-   cd home_library
+   git clone <repository-url> bookoholik
+   cd bookoholik
    ```
 
 2. **Configure environment (optional)**
@@ -161,7 +161,7 @@ A modern, multilingual web application for managing your personal home library. 
 ## 📁 Project Structure
 
 ```
-home_library/
+bookoholik/
 ├── docker-compose.yml          # Container orchestration
 ├── .env                        # Environment variables (create manually)
 ├── docker/
