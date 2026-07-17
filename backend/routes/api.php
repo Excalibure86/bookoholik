@@ -27,6 +27,7 @@ $router->post('/api/auth/register', [AuthController::class, 'register']);
 
 // Auth - user profile
 $router->get('/api/auth/me', [AuthController::class, 'me'], [AuthMiddleware::class]);
+$router->put('/api/auth/profile', [AuthController::class, 'updateProfile'], [AuthMiddleware::class]);
 $router->put('/api/auth/password', [AuthController::class, 'changePassword'], [AuthMiddleware::class]);
 
 // Books CRUD
@@ -38,17 +39,17 @@ $router->delete('/api/books/{id}', [BooksController::class, 'destroy'], [AuthMid
 $router->post('/api/books/{id}/toggle-read', [BooksController::class, 'toggleRead'], [AuthMiddleware::class]);
 $router->post('/api/books/isbn-lookup', [BooksController::class, 'isbnLookup'], [AuthMiddleware::class]);
 
-// Writers CRUD
+// Writers CRUD (read: any auth user, write: admin only)
 $router->get('/api/writers', [WritersController::class, 'index'], [AuthMiddleware::class]);
 $router->get('/api/writers/{id}', [WritersController::class, 'show'], [AuthMiddleware::class]);
-$router->post('/api/writers', [WritersController::class, 'store'], [AuthMiddleware::class]);
-$router->put('/api/writers/{id}', [WritersController::class, 'update'], [AuthMiddleware::class]);
-$router->delete('/api/writers/{id}', [WritersController::class, 'destroy'], [AuthMiddleware::class]);
+$router->post('/api/writers', [WritersController::class, 'store'], [AdminMiddleware::class]);
+$router->put('/api/writers/{id}', [WritersController::class, 'update'], [AdminMiddleware::class]);
+$router->delete('/api/writers/{id}', [WritersController::class, 'destroy'], [AdminMiddleware::class]);
 
-// Genres CRUD
+// Genres CRUD (read: any auth user, write: admin only)
 $router->get('/api/genres', [GenresController::class, 'index'], [AuthMiddleware::class]);
-$router->post('/api/genres', [GenresController::class, 'store'], [AuthMiddleware::class]);
-$router->put('/api/genres/{id}', [GenresController::class, 'update'], [AuthMiddleware::class]);
+$router->post('/api/genres', [GenresController::class, 'store'], [AdminMiddleware::class]);
+$router->put('/api/genres/{id}', [GenresController::class, 'update'], [AdminMiddleware::class]);
 $router->delete('/api/genres/{id}', [GenresController::class, 'destroy'], [AdminMiddleware::class]);
 
 // Lending

@@ -29,7 +29,9 @@
               <option value="ar">🇸🇦 العربية</option>
               <option value="fr">🇫🇷 Français</option>
             </select>
-            <span class="text-sm text-gray-600">{{ user?.full_name }}</span>
+            <router-link to="/settings" class="text-sm text-gray-600 hover:text-primary-700">
+              ⚙️ {{ user?.full_name }}
+            </router-link>
             <button @click="logout" class="text-sm text-red-600 hover:text-red-800">{{ t('logout') }}</button>
           </div>
         </div>
@@ -44,6 +46,7 @@
         <router-link to="/reports" class="block nav-link">{{ t('nav.reports') }}</router-link>
         <router-link v-if="isAdmin" to="/users" class="block nav-link">{{ t('nav.users') }}</router-link>
         <router-link v-if="isAdmin" to="/backup" class="block nav-link">{{ t('nav.backup') }}</router-link>
+        <router-link to="/settings" class="block nav-link">⚙️ {{ t('nav.settings') }}</router-link>
       </div>
     </nav>
 

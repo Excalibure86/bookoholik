@@ -35,7 +35,10 @@ class Database
                 self::$instance->exec("SET client_encoding TO 'UTF8'");
             } catch (PDOException $e) {
                 http_response_code(500);
-                echo json_encode(['error' => 'Database connection failed: ' . $e->getMessage()]);
+                // Log the real error server-side
+                error_log('Database connection failed: ' . $e->getMessage());
+                // Return generic message to client
+                echo json_encode(['error' => 'Database connection failed. Please contact the administrator.']);
                 exit();
             }
         }

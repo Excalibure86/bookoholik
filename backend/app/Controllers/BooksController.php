@@ -95,9 +95,9 @@ class BooksController extends BaseController
 
         $whereClause = !empty($conditions) ? 'WHERE ' . implode(' AND ', $conditions) : '';
 
-        // Sorting
+        // Sorting — strict whitelist only
         $allowedSorts = ['title', 'author', 'publication_year', 'created_at', 'genre', 'language'];
-        $sortBy = in_array($query['sort_by'] ?? '', $allowedSorts) ? $query['sort_by'] : 'created_at';
+        $sortBy = in_array($query['sort_by'] ?? '', $allowedSorts, true) ? $query['sort_by'] : 'created_at';
         $sortDir = strtoupper($query['sort_dir'] ?? 'DESC') === 'ASC' ? 'ASC' : 'DESC';
 
         // Get total count
@@ -356,12 +356,25 @@ class BooksController extends BaseController
             return;
         }
 
-        // Use Open Library API for ISBN lookup
+        // Sanitize ISBN — allow only digits and X (for ISBN-10)
         $isbn = preg_replace('/[^0-9X]/', '', strtoupper($data['isbn']));
+
+        // Validate ISBN format strictly
+        if (strlen($isbn) !== 10 && strlen($isbn) !== 13) {
+            $this->json(['error' => 'Invalid ISBN format. Must be ISBN-10 or ISBN-13.'], 422);
+            return;
+        }
+
+        // Only allow requests to Open Library API (prevent SSRF)
         $url = "https://openlibrary.org/api/books?bibkeys=ISBN:{$isbn}&format=json&jscmd=data";
 
         $context = stream_context_create([
-            'http' => ['timeout' => 10, 'method' => 'GET']
+            'http' => [
+                'timeout' => 5,
+                'method' => 'GET',
+                'follow_location' => 0, // Don't follow redirects
+                'max_redirects' => 0,
+            ]
         ]);
 
         $response = @file_get_contents($url, false, $context);

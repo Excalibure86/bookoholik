@@ -267,14 +267,14 @@ class ReportsController extends BaseController
             <table><tr><th>Language</th><th>Count</th></tr>';
 
         foreach ($byLanguage as $row) {
-            $html .= '<tr><td>' . ucfirst($row['language']) . '</td><td>' . $row['count'] . '</td></tr>';
+            $html .= '<tr><td>' . htmlspecialchars(ucfirst($row['language']), ENT_QUOTES, 'UTF-8') . '</td><td>' . (int)$row['count'] . '</td></tr>';
         }
         $html .= '</table>';
 
         $html .= '<h2>Top Genres</h2>
             <table><tr><th>Genre</th><th>Count</th></tr>';
         foreach ($byGenre as $row) {
-            $html .= '<tr><td>' . $row['genre'] . '</td><td>' . $row['count'] . '</td></tr>';
+            $html .= '<tr><td>' . htmlspecialchars($row['genre'], ENT_QUOTES, 'UTF-8') . '</td><td>' . (int)$row['count'] . '</td></tr>';
         }
         $html .= '</table></body></html>';
 

@@ -130,7 +130,7 @@ INSERT INTO genres (name, name_ar, name_fr) VALUES
     ('Cooking', 'طبخ', 'Cuisine'),
     ('Islamic Studies', 'دراسات إسلامية', 'Études islamiques');
 
--- Insert default admin user (password: admin123 - CHANGE IN PRODUCTION)
--- Password hash for 'admin123' using bcrypt
+-- Insert default admin user
+-- DEFAULT PASSWORD: Admin1234! (MUST be changed on first login)
 INSERT INTO users (username, email, password_hash, full_name, role) VALUES
-    ('admin', 'admin@homelibrary.local', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'مدير المكتبة', 'admin');
+    ('admin', 'admin@homelibrary.local', '$2y$12$/COW4ljVYn.YoMpWPrxtgu4dyeNo73abitkJiqab8LEUn.qqq3D3e', 'مدير المكتبة', 'admin');

@@ -38,6 +38,12 @@ RUN chown -R www-data:www-data /var/www/html \
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
+# Apache already drops to www-data for request handling.
+# Restrict filesystem: remove write access except storage
+RUN chmod -R 555 /var/www/html \
+    && chmod -R 775 /var/www/html/storage 2>/dev/null || true \
+    && chown -R www-data:www-data /var/www/html/storage 2>/dev/null || true
+
 EXPOSE 80
 
 CMD ["apache2-foreground"]

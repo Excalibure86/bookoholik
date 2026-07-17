@@ -31,6 +31,7 @@ export default {
     users: 'المستخدمون',
     backup: 'النسخ الاحتياطي',
     dashboard: 'لوحة التحكم',
+    settings: 'الإعدادات',
   },
 
   // Auth
@@ -292,5 +293,29 @@ export default {
     save_failed: 'فشل في حفظ النوع.',
     delete_confirm: 'حذف النوع "{name}"؟',
     delete_failed: 'فشل في حذف النوع.',
+  },
+
+  // Settings
+  settings: {
+    title: 'الإعدادات',
+    profile_info: 'المعلومات الشخصية',
+    full_name: 'الاسم الكامل',
+    username: 'اسم المستخدم',
+    email: 'البريد الإلكتروني',
+    update_profile: 'تحديث الملف الشخصي',
+    profile_updated: 'تم تحديث الملف الشخصي بنجاح!',
+    change_password: 'تغيير كلمة المرور',
+    current_password: 'كلمة المرور الحالية',
+    new_password: 'كلمة المرور الجديدة',
+    confirm_password: 'تأكيد كلمة المرور الجديدة',
+    update_password: 'تحديث كلمة المرور',
+    password_updated: 'تم تغيير كلمة المرور بنجاح!',
+    passwords_no_match: 'كلمتا المرور غير متطابقتين.',
+    password_too_short: 'كلمة المرور يجب أن تكون 10 أحرف على الأقل.',
+    password_requirements: 'الحد الأدنى 10 أحرف مع أحرف كبيرة وصغيرة ورقم.',
+    update_failed: 'فشل التحديث. يرجى المحاولة مرة أخرى.',
+    account_info: 'معلومات الحساب',
+    role: 'الدور',
+    member_since: 'عضو منذ',
   },
 }

@@ -31,6 +31,7 @@ export default {
     users: 'Users',
     backup: 'Backup',
     dashboard: 'Dashboard',
+    settings: 'Settings',
   },
 
   // Auth
@@ -292,5 +293,29 @@ export default {
     save_failed: 'Failed to save genre.',
     delete_confirm: 'Delete genre "{name}"?',
     delete_failed: 'Failed to delete genre.',
+  },
+
+  // Settings
+  settings: {
+    title: 'Settings',
+    profile_info: 'Profile Information',
+    full_name: 'Full Name',
+    username: 'Username',
+    email: 'Email',
+    update_profile: 'Update Profile',
+    profile_updated: 'Profile updated successfully!',
+    change_password: 'Change Password',
+    current_password: 'Current Password',
+    new_password: 'New Password',
+    confirm_password: 'Confirm New Password',
+    update_password: 'Update Password',
+    password_updated: 'Password changed successfully!',
+    passwords_no_match: 'New passwords do not match.',
+    password_too_short: 'Password must be at least 10 characters.',
+    password_requirements: 'Minimum 10 characters with uppercase, lowercase, and a number.',
+    update_failed: 'Update failed. Please try again.',
+    account_info: 'Account Information',
+    role: 'Role',
+    member_since: 'Member Since',
   },
 }

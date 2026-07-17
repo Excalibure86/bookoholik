@@ -9,13 +9,19 @@ services:
     environment:
       POSTGRES_DB: ${DB_DATABASE:-home_library}
       POSTGRES_USER: ${DB_USERNAME:-library_user}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-library_secret}
-    ports:
-      - "${DB_PORT:-5432}:5432"
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+    # ports:
+      # Uncomment below ONLY for local development. Never expose in production.
+      # - "${DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - library_network
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '1.0'
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-library_user} -d ${DB_DATABASE:-home_library}"]
       interval: 10s
@@ -31,14 +37,15 @@ services:
     restart: unless-stopped
     environment:
       APP_ENV: ${APP_ENV:-production}
-      APP_KEY: ${APP_KEY:-base64:randomkey123456789012345678901234}
+      APP_KEY: ${APP_KEY:?APP_KEY is required}
       APP_DEBUG: ${APP_DEBUG:-false}
       DB_HOST: db
       DB_PORT: 5432
       DB_DATABASE: ${DB_DATABASE:-home_library}
       DB_USERNAME: ${DB_USERNAME:-library_user}
-      DB_PASSWORD: ${DB_PASSWORD:-library_secret}
-      JWT_SECRET: ${JWT_SECRET:-your-jwt-secret-key-change-in-production}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
     ports:
       - "${BACKEND_PORT:-8080}:80"
     volumes:
@@ -48,6 +55,11 @@ services:
         condition: service_healthy
     networks:
       - library_network
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
 
   # Vue.js Frontend
   frontend:
@@ -64,6 +76,11 @@ services:
       - backend
     networks:
       - library_network
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.5'
 
   # Backup service (optional cron-based)
   backup:
@@ -76,7 +93,7 @@ services:
       PGHOST: db
       PGDATABASE: ${DB_DATABASE:-home_library}
       PGUSER: ${DB_USERNAME:-library_user}
-      PGPASSWORD: ${DB_PASSWORD:-library_secret}
+      PGPASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
     volumes:
       - backups_data:/backups
     entrypoint: /bin/sh

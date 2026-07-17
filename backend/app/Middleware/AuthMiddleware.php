@@ -21,7 +21,12 @@ class AuthMiddleware
         }
 
         try {
-            $secret = $_ENV['JWT_SECRET'] ?? 'your-jwt-secret-key-change-in-production';
+            $secret = $_ENV['JWT_SECRET'] ?? null;
+            if (empty($secret)) {
+                http_response_code(500);
+                echo json_encode(['error' => 'Server misconfiguration: JWT_SECRET not set.']);
+                return false;
+            }
             $decoded = JWT::decode($token, new Key($secret, 'HS256'));
 
             // Store user data in global scope for controllers

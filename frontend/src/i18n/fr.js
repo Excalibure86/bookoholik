@@ -31,6 +31,7 @@ export default {
     users: 'Utilisateurs',
     backup: 'Sauvegarde',
     dashboard: 'Tableau de bord',
+    settings: 'Paramètres',
   },
 
   // Auth
@@ -292,5 +293,29 @@ export default {
     save_failed: "Échec de l'enregistrement du genre.",
     delete_confirm: 'Supprimer le genre "{name}" ?',
     delete_failed: 'Échec de la suppression du genre.',
+  },
+
+  // Settings
+  settings: {
+    title: 'Paramètres',
+    profile_info: 'Informations du profil',
+    full_name: 'Nom complet',
+    username: "Nom d'utilisateur",
+    email: 'E-mail',
+    update_profile: 'Mettre à jour le profil',
+    profile_updated: 'Profil mis à jour avec succès !',
+    change_password: 'Changer le mot de passe',
+    current_password: 'Mot de passe actuel',
+    new_password: 'Nouveau mot de passe',
+    confirm_password: 'Confirmer le nouveau mot de passe',
+    update_password: 'Mettre à jour le mot de passe',
+    password_updated: 'Mot de passe changé avec succès !',
+    passwords_no_match: 'Les mots de passe ne correspondent pas.',
+    password_too_short: 'Le mot de passe doit comporter au moins 10 caractères.',
+    password_requirements: 'Minimum 10 caractères avec majuscule, minuscule et un chiffre.',
+    update_failed: 'Échec de la mise à jour. Veuillez réessayer.',
+    account_info: 'Informations du compte',
+    role: 'Rôle',
+    member_since: 'Membre depuis',
   },
 }

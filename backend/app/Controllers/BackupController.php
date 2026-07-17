@@ -37,10 +37,21 @@ class BackupController extends BaseController
         $filepath = "{$this->backupDir}/{$filename}";
 
         // Set password in environment for pg_dump
-        putenv("PGPASSWORD={$password}");
+        putenv("PGPASSWORD=" . $password);
 
-        $command = "pg_dump -h {$host} -p {$port} -U {$username} {$dbname} > {$filepath} 2>&1";
+        // Use escapeshellarg to prevent command injection
+        $command = sprintf(
+            'pg_dump -h %s -p %s -U %s %s > %s 2>&1',
+            escapeshellarg($host),
+            escapeshellarg($port),
+            escapeshellarg($username),
+            escapeshellarg($dbname),
+            escapeshellarg($filepath)
+        );
         exec($command, $output, $returnCode);
+
+        // Clear password from environment
+        putenv('PGPASSWORD');
 
         if ($returnCode !== 0) {
             $this->json(['error' => 'Backup failed.', 'details' => implode("\n", $output)], 500);

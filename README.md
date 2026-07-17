@@ -99,8 +99,8 @@ A modern, multilingual web application for managing your personal home library. 
 1. **Clone the repository**
 
    ```bash
-   git clone <repository-url> bookoholik
-   cd bookoholik
+   git clone <repository-url> home_library
+   cd home_library
    ```
 
 2. **Configure environment (optional)**
@@ -149,19 +149,19 @@ A modern, multilingual web application for managing your personal home library. 
 
 5. **Login with default credentials**
 
-   | Field    | Value      |
-   |----------|------------|
-   | Username | `admin`    |
-   | Password | `password` |
+   | Field    | Value              |
+   |----------|--------------------|
+   | Username | `admin`        |
+   | Password | `Admin1234!`   |
 
-   > ⚠️ **Change the default password immediately in production!**
+   > ⚠️ **Change this password immediately after first login!**
 
 ---
 
 ## 📁 Project Structure
 
 ```
-bookoholik/
+home_library/
 ├── docker-compose.yml          # Container orchestration
 ├── .env                        # Environment variables (create manually)
 ├── docker/
@@ -344,13 +344,96 @@ API_URL=http://your-server:8080/api docker compose up -d --build frontend
 
 ## 🔒 Security Notes
 
-For production deployment:
+This application has been security-hardened against the OWASP Top 10. Below are the administrator responsibilities for production deployment.
 
-1. **Change default credentials** — Update `DB_PASSWORD` and the admin password after first login
-2. **Set a strong JWT secret** — `JWT_SECRET=<random-64-char-string>`
-3. **Use HTTPS** — Put a reverse proxy (nginx/Caddy/Traefik) in front with TLS
-4. **Restrict database port** — Remove `ports: - "5432:5432"` from docker-compose.yml if external access isn't needed
-5. **Set `APP_DEBUG=false`** — Never enable debug in production
+### ⚠️ MANDATORY Before Going to Production
+
+1. **Generate strong secrets** — Copy `.env.example` to `.env` and generate all secrets:
+   ```bash
+   cp .env.example .env
+   # Generate each secret:
+   sed -i "s|CHANGE_ME_GENERATE_STRONG_PASSWORD|$(openssl rand -base64 24)|" .env
+   sed -i "s|CHANGE_ME_GENERATE_WITH_openssl_rand_base64_48|$(openssl rand -base64 48)|" .env
+   sed -i "s|CHANGE_ME_GENERATE_WITH_openssl_rand_base64_32|$(openssl rand -base64 32)|" .env
+   ```
+
+2. **Change default admin password** — The default admin password is `Admin1234!`. Login and change it immediately via the Settings page.
+
+3. **Set `APP_DEBUG=false`** — Never enable debug mode in production.
+
+4. **Configure CORS origin** — Set `CORS_ORIGIN` in `.env` to your actual frontend URL:
+   ```env
+   CORS_ORIGIN=https://your-domain.com
+   ```
+
+5. **Use HTTPS** — Deploy behind a reverse proxy (nginx/Caddy/Traefik) with TLS certificates. Update `API_URL` to use `https://`.
+
+6. **Database port is NOT exposed by default** — If you need direct DB access for development, uncomment the ports section in `docker-compose.yml`. Never expose in production.
+
+### 🔐 Backup Encryption (Recommended)
+
+Backups are stored as `.sql.gz` files. For production, encrypt them at rest:
+
+```bash
+# Generate a GPG key for backup encryption
+gpg --gen-key
+
+# Modify docker/backup-cron.sh to pipe through gpg:
+# pg_dump ... | gzip | gpg --symmetric --cipher-algo AES256 --batch --passphrase-file /run/secrets/backup_key > ${BACKUP_FILE}.gpg
+```
+
+### 🔄 Disable Open Registration (Optional)
+
+Registration is rate-limited (3 per hour per IP) but publicly accessible. To restrict it to admin-only:
+
+1. Edit `backend/routes/api.php`
+2. Change:
+   ```php
+   $router->post('/api/auth/register', [AuthController::class, 'register']);
+   ```
+   To:
+   ```php
+   $router->post('/api/auth/register', [AuthController::class, 'register'], [AdminMiddleware::class]);
+   ```
+
+### 🛡️ Additional Hardening (Recommended)
+
+| Action | How |
+|--------|-----|
+| Enable HSTS | Add `Strict-Transport-Security: max-age=31536000; includeSubDomains` in your reverse proxy |
+| Rotate JWT secret | Change `JWT_SECRET` quarterly — all users will need to re-login |
+| Monitor failed logins | Check container logs: `docker compose logs backend \| grep 401` |
+| Update dependencies | Run `composer audit` and `npm audit` weekly |
+| Scan container images | Use `trivy image bookoholik_backend` before deploying |
+| Restrict registration | Move `/api/auth/register` behind `AdminMiddleware` (see above) |
+| Database SSL | Enable SSL in PostgreSQL for encrypted connections between backend and DB |
+
+### 📋 Security Features Implemented
+
+| Feature | Status |
+|---------|--------|
+| SQL Injection protection (PDO prepared statements) | ✅ |
+| XSS prevention (Vue.js auto-escaping + htmlspecialchars) | ✅ |
+| CORS restricted to configured origin | ✅ |
+| JWT authentication with expiry (8h) | ✅ |
+| Rate limiting on login (5/15min) and registration (3/hr) | ✅ |
+| Password policy (10+ chars, uppercase, lowercase, number) | ✅ |
+| Role-based access control (Admin/User/Viewer) | ✅ |
+| Security headers (X-Content-Type-Options, X-Frame-Options, CSP, etc.) | ✅ |
+| No hardcoded secrets (fails fast if env not set) | ✅ |
+| Command injection prevention (escapeshellarg) | ✅ |
+| Container resource limits (memory/CPU) | ✅ |
+| Database port not exposed by default | ✅ |
+| Backup file permissions restricted (chmod 600) | ✅ |
+| Secure .pgpass usage (not env var in process) | ✅ |
+| HTML escaping in PDF exports | ✅ |
+| Request timeout (30s) | ✅ |
+| Token expiry check on frontend | ✅ |
+| Generic error messages (no stack traces to client) | ✅ |
+
+### ⚠️ Known Advisory
+
+- `firebase/php-jwt ^6.10` has advisory `PKSA-y2cr-5h3j-g3ys`. This is acknowledged in `composer.json`. Monitor for a patched version and upgrade when available.
 
 ---
 
