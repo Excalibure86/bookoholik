@@ -369,4 +369,4 @@ For production deployment:
 
 ## 📄 License
 
-This project is for personal use. All rights reserved.
+This project is licensed under the [MIT License](LICENSE). You are free to use, modify, and distribute this software. See the [LICENSE](LICENSE) file for details.
